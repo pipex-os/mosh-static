@@ -1,7 +1,11 @@
 # Based on from https://github.com/javabrett/mosh/blob/docker/dockerfiles/Dockerfile.alpine
-FROM alpine:3.13
+FROM alpine
+
+ARG MOSH_VERSION=1.3.2
+
 RUN apk update && \
   apk --no-cache add \
+  git \
   autoconf \
   automake \
   build-base \
@@ -16,3 +20,14 @@ RUN apk update && \
   zlib-static \
   zlib-dev \
   libutempter-dev
+
+# Build as static file
+RUN git clone --depth=1 --branch mosh-${MOSH_VERSION} https://github.com/mobile-shell/mosh.git  && \
+    cd mosh && \
+    ./autogen.sh && LDFLAGS=-static ./configure && make
+
+
+FROM alpine
+
+COPY --from=0 /mosh/src/frontend/mosh-server /usr/local/bin
+COPY --from=0 /mosh/src/frontend/mosh-client /usr/local/bin
