@@ -27,7 +27,7 @@ RUN git clone --depth=1 --branch mosh-${MOSH_VERSION} https://github.com/mobile-
     ./autogen.sh && LDFLAGS=-static ./configure && make
 
 
-FROM alpine
+FROM scratch
 
-COPY --from=0 /mosh/src/frontend/mosh-server /usr/local/bin
-COPY --from=0 /mosh/src/frontend/mosh-client /usr/local/bin
+COPY --from=0 /mosh/src/frontend/mosh-server /
+COPY --from=0 /mosh/src/frontend/mosh-client /
